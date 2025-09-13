@@ -63,12 +63,13 @@ def user_paid(
     with open("data.csv", "w", newline="") as f:
         f.write(dataframe.to_csv(index=False))
 
+class DeleteCustomer(BaseModel):
+    customer: str
+
 @app.post("/delete_user/")
-def delete_user(
-    customer: str,
-):
+def delete_user(req: DeleteCustomer):
     dataframe = pd.read_csv("data.csv")
-    dataframe = dataframe[dataframe["customer"] != customer.strip().capitalize()]
+    dataframe = dataframe[dataframe["customer"] != req.customer.strip().capitalize()]
     
     with open("data.csv", "w", newline="") as f:
         f.write(dataframe.to_csv(index=False))
