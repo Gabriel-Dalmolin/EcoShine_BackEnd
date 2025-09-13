@@ -69,6 +69,8 @@ class DeleteCustomer(BaseModel):
 @app.post("/delete_user/")
 def delete_user(req: DeleteCustomer):
     dataframe = pd.read_csv("data.csv")
+    print(req)
+    print(req.customer)
     dataframe = dataframe[dataframe["customer"] != req.customer.strip().capitalize()]
     
     with open("data.csv", "w", newline="") as f:
