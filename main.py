@@ -7,7 +7,7 @@ def format_data(data):
     return_data = []
 
     for line in data:
-        if line == r"customer,email,nb,nt,nv,paid\n":
+        if line.strip() == "customer,email,nb,nt,nv,paid":
             continue
         line = line.strip()
         return_data.append(line)
