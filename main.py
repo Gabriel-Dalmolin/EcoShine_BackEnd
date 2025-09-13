@@ -27,7 +27,7 @@ def add_new_customer(
     with open("data.csv", "a") as f:
         f.write(f"{customer},{email},{n_baby},{n_tutti},{n_vanilla},0\n")
 
-@app.get("")
+@app.get("/")
 def return_customers():
     with open("data.csv", "r") as f:
         data = f.readlines()
