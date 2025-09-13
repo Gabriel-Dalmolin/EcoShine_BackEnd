@@ -1,7 +1,23 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5500",  # frontend
+    "http://127.0.0.1:5500",
+    "https://ecoshine-74nv.onrender.com/"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # permite GET, POST, OPTIONS etc.
+    allow_headers=["*"],
+)
+
 
 def format_data(data):
     return_data = []
