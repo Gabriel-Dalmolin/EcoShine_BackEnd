@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -18,6 +19,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class Customer(BaseModel):
+    customer: str
+    email: str
+    n_baby: int
+    n_tutti: int
+    n_vanilla: int
 
 def format_data(data):
     return_data = []
@@ -31,17 +38,11 @@ def format_data(data):
     return return_data
 
 @app.post("/new_customer")
-def add_new_customer(
-    customer: str,
-    email: str,
-    n_baby: int,
-    n_tutti: int,
-    n_vanilla: int,
-):
-    customer = customer.title().strip()
+def add_new_customer(body: Customer):
+    customer = body.customer.title().strip()
 
     with open("data.csv", "a") as f:
-        f.write(f"{customer},{email},{n_baby},{n_tutti},{n_vanilla},0\n")
+        f.write(f"{customer},{body.email},{body.n_baby},{body.n_tutti},{body.n_vanilla},0\n")
 
 @app.get("/")
 def return_customers():
