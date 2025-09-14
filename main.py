@@ -61,13 +61,13 @@ def add_new_customer(body: Customer):
 def return_customers():
     return supabase.table("EcoShine").select("*").execute().data
 
+class UserPaid:
+    id: int
+    paid: bool
 
 @app.post("/user_paid/")
-def user_paid(
-    id: int,
-    paid: bool,
-):
-    supabase.table("EcoShine").update({"paid": paid}).eq("id", id).execute()
+def user_paid(req: UserPaid):
+    supabase.table("EcoShine").update({"paid": req.paid}).eq("id", req.id).execute()
 
 class DeleteCustomer(BaseModel):
     id: int
