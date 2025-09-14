@@ -2,6 +2,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from pydantic import BaseModel
+from supabase import create_client
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+supabase_url: str = os.environ.get("SUPABASE_URL") # type: ignore
+supabase_key: str = os.environ.get("SUPABASE_KEY") # type: ignore
+supabase = create_client(supabase_url, supabase_key)
 
 app = FastAPI()
 
@@ -26,52 +35,39 @@ class Customer(BaseModel):
     n_tutti: int
     n_vanilla: int
 
-def format_data(data):
-    return_data = []
-
-    for line in data:
-        if line.strip() == "customer,email,nb,nt,nv,paid":
-            continue
-        line = line.strip()
-        return_data.append(line)
-
-    return return_data
-
 @app.post("/new_customer")
 def add_new_customer(body: Customer):
     customer = body.customer.title().strip()
+    email = body.email.lower().strip()
+    n_baby = body.n_baby
+    n_tutti = body.n_tutti
+    n_vanilla = body.n_vanilla
 
-    with open("data.csv", "a") as f:
-        f.write(f"{customer},{body.email},{body.n_baby},{body.n_tutti},{body.n_vanilla},0\n")
+    supabase.table("EcoShine").insert({
+        "customer": customer,
+        "email": email,
+        "n_baby": n_baby,
+        "n_tutti": n_tutti,
+        "n_vanilla": n_vanilla
+        }).execute()
+    
 
 @app.get("/")
 def return_customers():
-    with open("data.csv", "r") as f:
-        data = f.readlines()
-        return_data = format_data(data)
-        return return_data
+    return supabase.table("EcoShine").select("*").execute().data
 
 
 @app.post("/user_paid/")
 def user_paid(
-    customer: str,
+    id: int,
     paid: bool,
 ):
-    dataframe = pd.read_csv("data.csv")
-    dataframe.loc[dataframe["customer"] == customer.strip().capitalize(), "paid"] = int(paid)
-    
-    with open("data.csv", "w", newline="") as f:
-        f.write(dataframe.to_csv(index=False))
+    supabase.table("EcoShine").update({"paid": paid}).eq("id", 1).execute()
 
 class DeleteCustomer(BaseModel):
-    customer: str
+    id: int
 
 @app.post("/delete_user/")
 def delete_user(req: DeleteCustomer):
-    dataframe = pd.read_csv("data.csv")
-    print(req)
-    print(req.customer)
-    dataframe = dataframe[dataframe["customer"] != req.customer.strip().capitalize()]
-    
-    with open("data.csv", "w", newline="") as f:
-        f.write(dataframe.to_csv(index=False))
+    supabase.table("EcoShine").delete().eq("id", req.id).execute()
+
