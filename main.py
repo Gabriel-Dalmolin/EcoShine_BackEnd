@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from pydantic import BaseModel
@@ -34,6 +34,10 @@ class Customer(BaseModel):
     n_baby: int
     n_tutti: int
     n_vanilla: int
+
+@app.head("/")
+def head_root():
+    return Response(status_code=200)
 
 @app.post("/new_customer")
 def add_new_customer(body: Customer):
