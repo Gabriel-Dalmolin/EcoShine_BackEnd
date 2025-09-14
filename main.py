@@ -48,7 +48,8 @@ def add_new_customer(body: Customer):
         "email": email,
         "n_baby": n_baby,
         "n_tutti": n_tutti,
-        "n_vanilla": n_vanilla
+        "n_vanilla": n_vanilla,
+        "paid": False
         }).execute()
     
 
