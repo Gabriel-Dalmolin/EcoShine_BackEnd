@@ -67,7 +67,7 @@ def user_paid(
     id: int,
     paid: bool,
 ):
-    supabase.table("EcoShine").update({"paid": paid}).eq("id", 1).execute()
+    supabase.table("EcoShine").update({"paid": paid}).eq("id", id).execute()
 
 class DeleteCustomer(BaseModel):
     id: int
