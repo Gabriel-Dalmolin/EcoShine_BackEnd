@@ -61,7 +61,7 @@ def add_new_customer(body: Customer):
 def return_customers():
     return supabase.table("EcoShine").select("*").execute().data
 
-class UserPaid:
+class UserPaid(BaseModel):
     id: int
     paid: bool
 
