@@ -17,7 +17,8 @@ app = FastAPI()
 origins = [
     "http://localhost:5500",  # frontend
     "http://127.0.0.1:5500",
-    "https://ecoshine-74nv.onrender.com/"
+    "https://ecoshine-74nv.onrender.com/",
+    "https://ecoshine-74nv.onrender.com/clients.html"
 ]
 
 app.add_middleware(
